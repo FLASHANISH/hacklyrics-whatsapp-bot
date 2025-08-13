@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Session files (contains authentication)
+session/
+*.session
+*.data.json
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Audio/Video/Media files (can be large)
+XeonMedia/audio/*.mp3
+XeonMedia/audio/*.wav
+XeonMedia/video/*.mp4
+XeonMedia/video/*.avi
+XeonMedia/image/*.jpg
+XeonMedia/image/*.png
+XeonMedia/sticker/*.webp
+XeonMedia/trash/
+
+# Keep directory structure but ignore content
+XeonMedia/audio/.gitkeep
+XeonMedia/video/.gitkeep  
+XeonMedia/image/.gitkeep
+XeonMedia/sticker/.gitkeep
+
+# Database files
+database/*.json
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Package manager lockfiles (optional)
+package-lock.json
+yarn.lock

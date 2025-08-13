@@ -1,7 +1,7 @@
 # 🎵 hacklyrics WhatsApp Bot - Full Featured Music Bot
 
-[![GitHub stars](https://img.shields.io/github/stars/your-username/hacklyrics-whatsapp-bot.svg?style=social&label=Star)](https://github.com/your-username/hacklyrics-whatsapp-bot)
-[![GitHub forks](https://img.shields.io/github/forks/your-username/hacklyrics-whatsapp-bot.svg?style=social&label=Fork)](https://github.com/your-username/hacklyrics-whatsapp-bot/fork)
+[![GitHub stars](https://img.shields.io/github/stars/flashanish/hacklyrics-whatsapp-bot.svg?style=social&label=Star)](https://github.com/flashanish/hacklyrics-whatsapp-bot)
+[![GitHub forks](https://img.shields.io/github/forks/flashanish/hacklyrics-whatsapp-bot.svg?style=social&label=Fork)](https://github.com/flashanish/hacklyrics-whatsapp-bot/fork)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A powerful, feature-rich WhatsApp bot built with Node.js that can download YouTube music, manage groups, create stickers, and much more!
@@ -39,7 +39,7 @@ A powerful, feature-rich WhatsApp bot built with Node.js that can download YouTu
 ### 📥 Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/your-username/hacklyrics-whatsapp-bot.git
+git clone https://github.com/flashanish/hacklyrics-whatsapp-bot.git
 cd hacklyrics-whatsapp-bot
 ```
 
@@ -214,7 +214,7 @@ sudo npm install
 
 ```bash
 # Clone for development
-git clone https://github.com/your-username/hacklyrics-whatsapp-bot.git
+git clone https://github.com/flashanish/hacklyrics-whatsapp-bot.git
 cd hacklyrics-whatsapp-bot
 
 # Install dev dependencies

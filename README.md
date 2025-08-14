@@ -98,9 +98,10 @@ hacklyrics/
 ## 📞 Support
 
 - **YouTube**: [@hacklyrics](http://www.youtube.com/@hacklyrics)
-- **Instagram**: [@hacklyrics](https://instagram.com/hacklyrics)
+- **Instagram**: [@hacklyrics](https://instagram.com/incompleteanish)
 - **Telegram**: [@hacklyrics](https://t.me/hacklyrics)
-- **GitHub**: [@flashsanu](https://github.com/flashsanu)
+- **GitHub**: [@flashanish](https://github.com/flashanish)
+- **linkedin**: [@anish]([https://github.com/flashanish](https://www.linkedin.com/in/anishkumarsahcsr)
 - **WhatsApp**: +9779811216964
 
 ## 📄 License

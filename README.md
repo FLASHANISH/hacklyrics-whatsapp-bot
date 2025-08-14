@@ -13,8 +13,8 @@ A powerful WhatsApp bot built with Node.js and Baileys library.
 
 1. **Clone or download the project**
 ```bash
-   git clone <repository-url>
-   cd hacklyrics
+   git clone https://github.com/FLASHANISH/hacklyrics-whatsapp-bot.git
+   cd hacklyrics-whatsapp-bot
 ```
 
 2. **Install dependencies**

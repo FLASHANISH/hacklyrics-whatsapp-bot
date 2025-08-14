@@ -65,7 +65,9 @@ const question = (text) => new Promise((resolve) => rl.question(text, resolve))
 async function startXeonBotInc() {
 //------------------------------------------------------
 let { version, isLatest } = await fetchLatestBaileysVersion()
-const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
+console.log(chalk.cyan(`📱 Using Baileys version: ${version}`))
+
+const { state, saveCreds } = await useMultiFileAuthState(`./session`)
     const msgRetryCounterCache = new NodeCache() // for retry message, "waiting message"
     
     // Get phone number first
@@ -81,11 +83,13 @@ const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
             phoneNumberInput = phoneNumberInput.replace(/[^0-9]/g, '')
         }
     }
+
+console.log(chalk.green(`📱 Using phone number: +${phoneNumberInput}`))
     
     const XeonBotInc = makeWASocket({
         logger: pino({ level: 'silent' }),
-        printQRInTerminal: !pairingCode, // popping up QR in terminal log
-      browser: [ "Ubuntu", "Chrome", "20.0.04" ], // for this issues https://github.com/WhiskeySockets/Baileys/issues/328
+    printQRInTerminal: false, // Disable QR code since we're using pairing code
+    browser: [ "Chrome (Linux)", "", "" ], // Updated browser info
      auth: {
          creds: state.creds,
          keys: makeCacheableSignalKeyStore(state.keys, Pino({ level: "fatal" }).child({ level: "fatal" })),
@@ -95,11 +99,13 @@ const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
       getMessage: async (key) => {
          let jid = jidNormalizedUser(key.remoteJid)
          let msg = await store.loadMessage(jid, key.id)
-
          return msg?.message || ""
       },
       msgRetryCounterCache, // Resolve waiting messages
       defaultQueryTimeoutMs: undefined, // for this issues https://github.com/WhiskeySockets/Baileys/issues/276
+    connectTimeoutMs: 60_000,
+    keepAliveIntervalMs: 30_000,
+    version: [2, 2323, 4], // Force specific version for better compatibility
    })
    
    store.bind(XeonBotInc.ev)
@@ -108,6 +114,8 @@ const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
    // source code https://github.com/WhiskeySockets/Baileys/blob/master/Example/example.ts#L61
    // Wait for connection and then request pairing code
    let pairingCodeRequested = false
+let connectionAttempts = 0
+const maxConnectionAttempts = 5
    
    XeonBotInc.ev.on('connection.update', async (update) => {
        const { connection, lastDisconnect } = update
@@ -117,21 +125,77 @@ const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
        }
        
        if (connection === 'open') {
-           if (!pairingCodeRequested && !XeonBotInc.authState.creds.registered) {
+        console.log(chalk.green('✅ Connected to WhatsApp!'))
+        
+        // Check if we need to request pairing code
+        if (!XeonBotInc.authState.creds.registered) {
+            if (!pairingCodeRequested) {
                pairingCodeRequested = true
                try {
                    console.log(chalk.yellow('📱 Requesting pairing code...'))
-                   let code = await XeonBotInc.requestPairingCode(phoneNumberInput)
+                    console.log(chalk.cyan('⏳ Please wait, this may take a few seconds...'))
+                    
+                    // Add delay before requesting pairing code
+                    await delay(3000)
+                    
+                    // Try to request pairing code multiple times if needed
+                    let code = null
+                    let attempts = 0
+                    const maxAttempts = 3
+                    
+                    while (!code && attempts < maxAttempts) {
+                        try {
+                            attempts++
+                            console.log(chalk.yellow(`🔄 Attempt ${attempts}/${maxAttempts} to get pairing code...`))
+                            code = await XeonBotInc.requestPairingCode(phoneNumberInput)
+                            if (code) break
+                        } catch (err) {
+                            console.log(chalk.red(`❌ Attempt ${attempts} failed:`, err.message))
+                            if (attempts < maxAttempts) {
+                                console.log(chalk.yellow('⏳ Waiting 5 seconds before retry...'))
+                                await delay(5000)
+                            }
+                        }
+                    }
+                    
+                    if (code) {
                    code = code?.match(/.{1,4}/g)?.join("-") || code
                    console.log(chalk.black(chalk.bgGreen(`Your Pairing Code : `)), chalk.black(chalk.white(code)))
                    console.log(chalk.cyan('Enter this code in your WhatsApp: Settings > Linked Devices > Link a Device'))
+                        console.log(chalk.yellow('⚠️  You have 2 minutes to enter the code before it expires'))
+                        
+                        // Set timeout for pairing code
+                        setTimeout(() => {
+                            if (!XeonBotInc.authState.creds.registered) {
+                                console.log(chalk.red('⏰ Pairing code expired. Please restart the bot.'))
+                                process.exit(1)
+                            }
+                        }, 120000) // 2 minutes
+                    } else {
+                        console.log(chalk.red('❌ Failed to generate pairing code after multiple attempts.'))
+                        console.log(chalk.yellow('💡 Try these solutions:'))
+                        console.log(chalk.yellow('   1. Clear session files: npm run clear-session'))
+                        console.log(chalk.yellow('   2. Use QR code instead: npm run start-qr'))
+                        console.log(chalk.yellow('   3. Wait 10-15 minutes and try again'))
+                        pairingCodeRequested = false
+                    }
                } catch (error) {
                    console.log(chalk.red('❌ Error requesting pairing code:', error.message))
+                    if (error.message.includes('rate-overlimit')) {
+                        console.log(chalk.yellow('⚠️ Rate limit exceeded. Please wait a few minutes before trying again.'))
+                        console.log(chalk.yellow('💡 Try using a different phone number or wait 10-15 minutes'))
+                    } else if (error.message.includes('not-authorized')) {
+                        console.log(chalk.red('❌ Phone number not authorized. Please check the number.'))
+                    } else {
+                        console.log(chalk.red('❌ Unknown error. Please restart the bot.'))
+                    }
+                    pairingCodeRequested = false
+                }
                }
            } else {
                // Already authenticated
                console.log(chalk.magenta(` `))
-               console.log(chalk.yellow(`🌿Connected to => ` + JSON.stringify(XeonBotInc.user, null, 2)))
+            console.log(chalk.yellow(`🌿 Connected to => ` + JSON.stringify(XeonBotInc.user, null, 2)))
                await delay(1999)
                console.log(chalk.yellow(`\n\n                  ${chalk.bold.blue(`[ ${global.botname} ]`)}\n\n`))
                console.log(chalk.cyan(`< ================================================== >`))
@@ -140,17 +204,49 @@ const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
                console.log(chalk.magenta(`${global.themeemoji} INSTAGRAM: @hacllyrics `))
                console.log(chalk.magenta(`${global.themeemoji} WA NUMBER: +977 9811216964`))
                console.log(chalk.magenta(`${global.themeemoji} CREDIT: youtube.com/@hacklyrics`))
-           }
-       }
-       
-       if (
-           connection === "close" &&
-           lastDisconnect &&
-           lastDisconnect.error &&
-           lastDisconnect.error.output.statusCode != 401
-       ) {
-           console.log(chalk.red('Connection closed, reconnecting...'))
+            
+            // Close readline interface
+            rl.close()
+        }
+    }
+    
+    if (connection === "close") {
+        console.log(chalk.red('❌ Connection closed'))
+        if (lastDisconnect && lastDisconnect.error) {
+            console.log(chalk.red('Error details:', lastDisconnect.error.message))
+            
+            // Handle specific error cases
+            if (lastDisconnect.error.output && lastDisconnect.error.output.statusCode === 401) {
+                console.log(chalk.red('❌ Authentication failed. Please check your credentials.'))
+                // Remove session files to force re-authentication
+                try {
+                    const sessionDir = './session'
+                    if (fs.existsSync(sessionDir)) {
+                        fs.rmSync(sessionDir, { recursive: true, force: true })
+                        console.log(chalk.yellow('🗑️ Session files removed. Please restart the bot.'))
+                    }
+                } catch (err) {
+                    console.log(chalk.red('Error removing session files:', err.message))
+                }
+                process.exit(1)
+            }
+            
+            if (lastDisconnect.error.message.includes('rate-overlimit')) {
+                console.log(chalk.yellow('⚠️ Rate limit exceeded. Waiting 60 seconds before reconnecting...'))
+                await delay(60000)
+            }
+        }
+        
+        // Reconnection logic with attempt limit
+        if (connectionAttempts < maxConnectionAttempts) {
+            connectionAttempts++
+            console.log(chalk.yellow(`🔄 Reconnecting... (Attempt ${connectionAttempts}/${maxConnectionAttempts})`))
+            await delay(5000) // Wait 5 seconds before reconnecting
            startXeonBotInc()
+        } else {
+            console.log(chalk.red('❌ Max reconnection attempts reached. Please check your internet connection and restart the bot.'))
+            process.exit(1)
+        }
        }
    })
    
@@ -181,10 +277,10 @@ const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
         	if (global.autoswview){
             mek = chatUpdate.messages[0]
             if (mek.key && mek.key.remoteJid === 'status@broadcast') {
-            	await XeonBotInc.readMessages([mek.key]) }
+            await XeonBotInc.readMessages([mek.key]) 
+        }
             }
     })
-
    
     XeonBotInc.decodeJid = (jid) => {
         if (!jid) return jid
@@ -266,9 +362,9 @@ const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
         let buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,` [1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
         let buffer
         if (options && (options.packname || options.author)) {
-            buffer = await writeExifVid(buff, options)
+        buffer = await writeExifImg(buff, options)
         } else {
-            buffer = await videoToWebp(buff)
+        buffer = await imageToWebp(buff)
         }
 
         await XeonBotInc.sendMessage(jid, {

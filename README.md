@@ -1,290 +1,112 @@
-# 🎵 hacklyrics WhatsApp Bot - Full Featured Music Bot
+# hacklyrics WhatsApp Bot
 
-[![GitHub stars](https://img.shields.io/github/stars/flashanish/hacklyrics-whatsapp-bot.svg?style=social&label=Star)](https://github.com/flashanish/hacklyrics-whatsapp-bot)
-[![GitHub forks](https://img.shields.io/github/forks/flashanish/hacklyrics-whatsapp-bot.svg?style=social&label=Fork)](https://github.com/flashanish/hacklyrics-whatsapp-bot/fork)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+A powerful WhatsApp bot built with Node.js and Baileys library.
 
-A powerful, feature-rich WhatsApp bot built with Node.js that can download YouTube music, manage groups, create stickers, and much more!
-
-## ✨ Features
-
-### 🎵 **Music & Media**
-- ✅ **YouTube Music Download** - Download any song from YouTube
-- ✅ **High Quality Audio** - 128kbps MP3 with metadata
-- ✅ **Fast Processing** - Quick downloads and conversions
-- ✅ **Multiple Formats** - MP3, MP4 support
-
-### 🤖 **Bot Capabilities**
-- ✅ **Group Management** - Admin commands, member control
-- ✅ **Sticker Creation** - Convert images/videos to stickers
-- ✅ **Media Conversion** - Image, video, audio conversions
-- ✅ **Auto Status View** - Automatically view WhatsApp status
-- ✅ **Bug/Crash Features** - Advanced bot functionalities
-
-### 🛡️ **Advanced Features**
-- ✅ **Multi-Session Support** - QR Code and Pairing Code login
-- ✅ **Database Management** - Store and retrieve media
-- ✅ **Owner Controls** - Full bot administration
-- ✅ **Auto-Reply System** - Custom responses
-- ✅ **24/7 Online** - Stable connection with auto-reconnect
-
-## 🚀 Installation & Setup
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js (v16 or higher)
-- Git
-- Windows/Linux/MacOS
-- Active internet connection
+- Node.js 16.0.0 or higher
+- npm or yarn package manager
+- Stable internet connection
 
-### 📥 Step 1: Clone Repository
+### Installation
 
+1. **Clone or download the project**
 ```bash
-git clone https://github.com/flashanish/hacklyrics-whatsapp-bot.git
-cd hacklyrics-whatsapp-bot
+   git clone <repository-url>
+   cd hacklyrics
 ```
 
-### 📦 Step 2: Install Dependencies
-
+2. **Install dependencies**
 ```bash
 npm install
 ```
 
-### ⚙️ Step 3: Configure Settings
-
-1. Open `settings.js` and customize:
-```javascript
-global.ownernumber = 'YOUR_PHONE_NUMBER' // Your WhatsApp number
-global.botname = 'hacklyrics Bot'
-global.ownername = 'Your Name'
-// Add other configurations as needed
-```
-
-### 🎯 Step 4: Start the Bot
-
+3. **Start the bot**
 ```bash
-node hacklyrics-full.js
-```
+   npm start
+   # or
+   npm run start-bot
+   ```
 
-### 📱 Step 5: Connect to WhatsApp
+## 🔐 Authentication
 
-1. Choose connection method:
-   - **Option 1**: QR Code (scan with your phone)
-   - **Option 2**: Pairing Code (enter phone number)
+The bot uses **pairing code authentication**:
 
-2. For QR Code:
-   - Scan the QR code with WhatsApp
-   - Go to: WhatsApp → Settings → Linked Devices → Link a Device
-
-3. For Pairing Code:
-   - Enter your WhatsApp number
-   - Enter the pairing code in WhatsApp
-
-## 🎵 Usage Examples
-
-### Music Download Commands
-```
-🎵 Download Music:
-- song despacito
-- play shape of you
-- song tu maan meri jaan
-
-📹 Video Download:
-- ytmp4 https://youtube.com/watch?v=VIDEO_ID
-- ytmp3 https://youtube.com/watch?v=VIDEO_ID
-```
-
-### Bot Commands
-```
-📋 Help Menu:
-- help
-- menu
-
-👥 Group Management:
-- tagall
-- kick @user
-- promote @user
-- demote @user
-
-🎨 Media Conversion:
-- sticker (reply to image)
-- toimage (reply to sticker)
-- togif (reply to video)
-```
+1. Run the bot
+2. Enter your WhatsApp number (with country code, e.g., +9779811216964)
+3. The bot will generate a pairing code
+4. Open WhatsApp → Settings → Linked Devices → Link a Device
+5. Enter the pairing code shown in the terminal
 
 ## 📁 Project Structure
 
 ```
-hacklyrics-whatsapp-bot/
-├── 📄 hacklyrics-full.js      # Main bot file
-├── 📄 XeonBug4.js            # Advanced features module
-├── 📄 settings.js            # Bot configuration
-├── 📄 package.json           # Dependencies
-├── 📁 lib/                   # Library files
-│   ├── 📄 ytdl2.js          # YouTube downloader
-│   ├── 📄 myfunc.js         # Utility functions
-│   └── 📄 exif.js           # Sticker metadata
-├── 📁 database/              # Bot databases
-├── 📁 XeonMedia/             # Media storage
-│   ├── 📁 audio/            # Downloaded music
-│   ├── 📁 image/            # Images
-│   ├── 📁 video/            # Videos
-│   └── 📁 sticker/          # Stickers
-└── 📁 69/                    # Bug features
+hacklyrics/
+├── main.js              # Main bot logic
+├── index.js             # Entry point
+├── settings.js          # Bot configuration
+├── XeonBug4.js          # Command handlers
+├── lib/                 # Utility libraries
+├── database/            # Data storage
+├── session/             # WhatsApp session files
+└── XeonMedia/           # Media files
 ```
+
+## 🛠️ Available Scripts
+
+- `npm start` - Start the bot normally
+- `npm run start-bot` - Start with enhanced error handling
+- `npm run clear-session` - Clear session files (fix auth issues)
+- `npm run dev` - Start in development mode with auto-restart
 
 ## 🔧 Troubleshooting
 
-### Common Issues & Solutions
+### Connection Issues
+1. **Clear session files**: `npm run clear-session`
+2. **Check internet connection**
+3. **Verify phone number format** (must include country code)
+4. **Wait if rate limited** (try again after a few minutes)
 
-**1. FFmpeg Not Found**
-```bash
-npm install ffmpeg-static
-```
+### Common Errors
+- **Authentication failed**: Clear session and restart
+- **Rate limit exceeded**: Wait 5-10 minutes before retrying
+- **Connection timeout**: Check firewall/network settings
 
-**2. YouTube Download Errors**
-```bash
-npm install @distube/ytdl-core@latest
-```
+### Session Management
+- Session files are stored in `./session/` directory
+- If authentication fails, run `npm run clear-session`
+- Restart the bot after clearing sessions
 
-**3. Connection Issues**
-- Delete `session` folder and reconnect
-- Check internet connection
-- Restart the bot
+## 📱 Features
 
-**4. Permission Errors**
-```bash
-# Windows (Run as Administrator)
-npm install --unsafe-perm=true --allow-root
+- ✅ WhatsApp Web API integration
+- ✅ Pairing code authentication
+- ✅ Auto-reconnection
+- ✅ Command handling system
+- ✅ Media support (images, videos, stickers)
+- ✅ Group management
+- ✅ Auto-reply system
 
-# Linux/Mac
-sudo npm install
-```
+## 🚨 Important Notes
 
-## 📋 Available Commands
-
-### 🎵 Music Commands
-- `play [song name]` - Download and play music
-- `song [song name]` - Download music
-- `ytmp3 [youtube url]` - YouTube to MP3
-- `ytmp4 [youtube url]` - YouTube to MP4
-
-### 👑 Owner Commands
-- `shutdown` - Turn off bot
-- `restart` - Restart bot
-- `block [number]` - Block user
-- `unblock [number]` - Unblock user
-- `addowner [number]` - Add bot owner
-- `delowner [number]` - Remove bot owner
-
-### 👥 Group Commands
-- `tagall` - Tag all members
-- `hidetag [text]` - Hidden tag all
-- `kick @user` - Remove member
-- `add [number]` - Add member
-- `promote @user` - Make admin
-- `demote @user` - Remove admin
-- `group [open/close]` - Group settings
-- `linkgc` - Get group link
-
-### 🎨 Convert Commands
-- `sticker` - Create sticker (reply to image/video)
-- `take [packname|author]` - Change sticker info
-- `toimage` - Sticker to image
-- `tovideo` - Convert to video
-- `toaudio` - Convert to audio
-- `togif` - Convert to GIF
-
-### 💾 Database Commands
-- `addvideo [name]` - Save video
-- `addimage [name]` - Save image
-- `addsticker [name]` - Save sticker
-- `addvn [name]` - Save voice note
-- `listvideo` - List saved videos
-- `listimage` - List saved images
-
-### 💥 Bug Commands (Advanced)
-- `xcrash [number]` - Send crash message
-- `xioscrash [number]` - iOS crash
-- `iosgoogle [number]` - Google crash
-- `xcrash2 [amount]` - Multiple crashes
-
-## 🛠️ Development Setup
-
-### For Developers
-
-```bash
-# Clone for development
-git clone https://github.com/flashanish/hacklyrics-whatsapp-bot.git
-cd hacklyrics-whatsapp-bot
-
-# Install dev dependencies
-npm install
-
-# Start in development mode
-npm run dev
-```
-
-### Contributing
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- **Never share your session files** - they contain sensitive authentication data
+- **Use a stable internet connection** for reliable operation
+- **Keep your phone connected** to the internet for the bot to work
+- **Don't use multiple instances** with the same number
 
 ## 📞 Support
 
-### Get Help
-- **YouTube**: [hacklyrics Channel](http://www.youtube.com/@hacklyrics)
-- **WhatsApp**: +977 9811216964
-- **Issues**: Create an issue on GitHub
-
-### Donation
-If you find this bot helpful, consider supporting:
-- **Buy Me a Coffee**: [Link]
-- **PayPal**: [Link]
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## ⚠️ Disclaimer
-
-- This bot is for educational purposes only
-- Use responsibly and respect WhatsApp's Terms of Service
-- The developers are not responsible for any misuse
-- YouTube content downloading should comply with YouTube's Terms of Service
-
-## 🌟 Acknowledgments
-
-- **Creator**: hacklyrics
 - **YouTube**: [@hacklyrics](http://www.youtube.com/@hacklyrics)
-- **Based on**: Baileys WhatsApp Web API
-- **Special Thanks**: All contributors and supporters
+- **Instagram**: [@hacklyrics](https://instagram.com/hacklyrics)
+- **Telegram**: [@hacklyrics](https://t.me/hacklyrics)
+- **GitHub**: [@flashsanu](https://github.com/flashsanu)
+- **WhatsApp**: +9779811216964
+
+## 📄 License
+
+MIT License - see LICENSE file for details
 
 ---
 
-### 📈 Statistics
-
-- ✅ **YouTube Downloads**: Unlimited
-- ✅ **Supported Formats**: MP3, MP4, WebP, PNG, JPG
-- ✅ **Group Support**: Up to 1000 members
-- ✅ **Uptime**: 99.9% (with proper hosting)
-- ✅ **Response Time**: < 2 seconds
-
-### 🔄 Version History
-
-- **v1.0.0** - Initial release
-- **v1.1.0** - Added YouTube music download
-- **v1.2.0** - Fixed FFmpeg integration
-- **v1.3.0** - Added advanced features
-- **v2.0.0** - Complete rewrite with stability improvements
-
----
-
-<p align="center">
-  <b>⭐ Star this repository if you found it helpful! ⭐</b>
-</p>
-
-<p align="center">
-  Made with ❤️ by <a href="http://www.youtube.com/@hacklyrics">hacklyrics</a>
-</p>
+**⚠️ Disclaimer**: This bot is for educational purposes. Users are responsible for complying with WhatsApp's Terms of Service and applicable laws.

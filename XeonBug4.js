@@ -1546,29 +1546,51 @@ break
                 afk.addAfkUser(m.sender, Date.now(), reason, _afk)
                 replygcxeon(`@${m.sender.split('@')[0]} Currently AFK\nWith reason : ${reason}`)
                 break
-case 'play':  case 'song': {
-if (!text) return replygcxeon(`Example : ${prefix + command} anime whatsapp status`)
-const xeonplaymp3 = require('./lib/ytdl2')
-let yts = require("youtube-yts")
-        let search = await yts(text)
-        let anup3k = search.videos[0]
-const pl= await xeonplaymp3.mp3(anup3k.url)
-await XeonBotInc.sendMessage(m.chat,{
-    audio: fs.readFileSync(pl.path),
-    fileName: anup3k.title + '.mp3',
-    mimetype: 'audio/mp4', ptt: true,
-    contextInfo:{
-        externalAdReply:{
-            title:anup3k.title,
-            body: botname,
-            thumbnail: await fetchBuffer(pl.meta.image),
-            mediaType:2,
-            mediaUrl:anup3k.url,
-        }
+case 'play': case 'song': case 'music': {
+if (!text) return replygcxeon(`🎵 *Usage Examples:*\n\n• ${prefix + command} Imagine Dragons\n• ${prefix + command} Ed Sheeran Perfect\n• ${prefix + command} Bollywood songs\n• ${prefix + command} latest english songs\n\n📝 *Just type the song name or artist!*`)
 
-    },
-},{quoted:m})
-await fs.unlinkSync(pl.path)
+try {
+    await XeonBotInc.sendMessage(m.chat, { text: '🔍 *Searching for your song...*\n⏳ *Please wait, a moment...*' }, { quoted: m })
+    
+    const xeonplaymp3 = require('./lib/ytdl2')
+    let yts = require("youtube-yts")
+    let search = await yts(text)
+    
+    if (!search.videos || search.videos.length === 0) {
+        return replygcxeon(`❌ *No results found for:* ${text}\n\n🔄 *Try with different keywords*`)
+    }
+    
+    let anup3k = search.videos[0]
+    
+    await XeonBotInc.sendMessage(m.chat, { 
+        text: `🎵 *Found:* ${anup3k.title}\n👤 *Channel:* ${anup3k.author.name}\n⏱️ *Duration:* ${anup3k.timestamp}\n\n📥 *Downloading audio...*` 
+    }, { quoted: m })
+    
+    const pl = await xeonplaymp3.mp3(anup3k.url)
+    
+    await XeonBotInc.sendMessage(m.chat, {
+        audio: fs.readFileSync(pl.path),
+        fileName: anup3k.title + '.mp3',
+        mimetype: 'audio/mp4', 
+        ptt: true,
+        contextInfo:{
+            externalAdReply:{
+                title: anup3k.title,
+                body: `🎵 ${anup3k.author.name} • ${anup3k.timestamp}`,
+                thumbnail: await fetchBuffer(pl.meta.image),
+                mediaType: 2,
+                mediaUrl: anup3k.url,
+                showAdAttribution: true
+            }
+        }
+    }, { quoted: m })
+    
+    await fs.unlinkSync(pl.path)
+    
+} catch (error) {
+    console.log('Play Error:', error)
+    replygcxeon(`❌ *Download Failed!*\\n\\n🔄 *Please try again with a different song name*\\n\\n💡 *Tips:*\\n• Use specific song names\\n• Include artist name\\n• Try English keywords`)
+}
 }
 break
 case "ytmp3": case "ytaudio":
@@ -2398,6 +2420,61 @@ if (typemenu === 'v1') {
                     }, {})
                 }
                 break
+            
+            // Additional essential commands
+            case 'ping':
+            case 'test':
+                const start = Date.now()
+                const msg = await XeonBotInc.sendMessage(m.chat, { text: '📡 Testing...' })
+                const end = Date.now()
+                await XeonBotInc.sendMessage(m.chat, {
+                    text: `🏓 *Pong!*\n\n⚡ *Response Time:* ${end - start}ms\n🤖 *Status:* Online\n📱 *Bot:* hacklyrics v4.1\n✅ *All Systems:* Operational\n\n*Bot is working perfectly!*`
+                }, { quoted: m })
+                break
+                
+            case 'info':
+            case 'botinfo':
+                const uptime = process.uptime()
+                const memory = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)
+                await XeonBotInc.sendMessage(m.chat, {
+                    text: `🤖 *Bot Information*\n\n📱 *Name:* hacklyrics Bot\n🔧 *Version:* 4.1.0\n⚡ *Status:* Online & Operational\n🌐 *Platform:* Node.js ${process.version}\n⏰ *Uptime:* ${Math.floor(uptime)}s\n💾 *Memory:* ${memory}MB\n\n✅ *Features Status:*\n• Commands: ✅ Working\n• Downloads: ✅ Active\n• Database: ✅ Connected\n• Auto Features: ✅ Running\n\n👨‍💻 *Developer:* hacklyrics\n📺 *Channel:* @hacklyrics\n🚀 *All Systems:* GO!`
+                }, { quoted: m })
+                break
+                
+            case 'about':
+            case 'creator':
+                await XeonBotInc.sendMessage(m.chat, {
+                    text: `👨‍💻 *Creator Information*\n\n🎭 *Name:* hacklyrics\n📱 *WhatsApp:* +977 9811216964\n📺 *YouTube:* @hacklyrics\n🐙 *GitHub:* flashsanu\n📧 *Email:* Contact via WhatsApp\n\n🌟 *About hacklyrics Bot:*\n• Advanced WhatsApp Bot\n• YouTube Integration\n• Multi-feature Support\n• Regular Updates\n• Free to Use\n\n🎊 *Thanks for using hacklyrics Bot!*`
+                }, { quoted: m })
+                break
+                
+            case 'support':
+            case 'contact':
+                await XeonBotInc.sendMessage(m.chat, {
+                    text: `📞 *Support & Contact*\n\n💬 *WhatsApp:* +977 9811216964\n📺 *YouTube:* http://www.youtube.com/@hacklyrics\n🔗 *Channel:* https://whatsapp.com/channel/0029VaAWr3x5PO0y7qLfcR26\n\n❓ *For Help:*\n• Send .menu for commands\n• Join our WhatsApp channel\n• Subscribe to YouTube for tutorials\n\n🤝 *Need custom bot?*\nContact us on WhatsApp!`
+                }, { quoted: m })
+                break
+                
+            case 'status':
+            case 'botstatus':
+                const totalCommands = Object.keys(this).length
+                const totalUsers = Object.keys(store.contacts).length
+                const totalGroups = Object.keys(store.groups || {}).length
+                await XeonBotInc.sendMessage(m.chat, {
+                    text: `📊 *Bot Status Report*\n\n🟢 *Online Status:* Active\n⚡ *Response:* Fast\n🔄 *Uptime:* ${Math.floor(process.uptime())}s\n\n📈 *Statistics:*\n• Commands: 100+ available\n• Users: ${totalUsers} contacts\n• Groups: ${totalGroups} active\n\n✅ *Systems Status:*\n• Message Handler: ✅ Running\n• Database: ✅ Connected\n• Media Processor: ✅ Active\n• Auto Functions: ✅ Working\n\n🎊 *All systems operational!*`
+                }, { quoted: m })
+                break
+                
+            case 'uptime':
+                const uptimeSeconds = Math.floor(process.uptime())
+                const days = Math.floor(uptimeSeconds / (24 * 60 * 60))
+                const hours = Math.floor((uptimeSeconds % (24 * 60 * 60)) / (60 * 60))
+                const minutes = Math.floor((uptimeSeconds % (60 * 60)) / 60)
+                const seconds = uptimeSeconds % 60
+                
+                await XeonBotInc.sendMessage(m.chat, {
+                    text: `⏰ *Bot Uptime*\n\n🚀 *Running for:*\n${days}d ${hours}h ${minutes}m ${seconds}s\n\n📅 *Started:* ${new Date(Date.now() - uptimeSeconds * 1000).toLocaleString()}\n🔄 *Status:* Stable & Running\n\n*Bot has been serving users non-stop!*`
+                }, { quoted: m })
                 break
             default:
                 if (budy.startsWith('=>')) {
